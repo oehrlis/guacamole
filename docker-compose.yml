@@ -1,0 +1,103 @@
+# -----------------------------------------------------------------------
+# Trivadis AG, Business Development & Support (BDS)
+# Saegereistrasse 29, 8152 Glattbrugg, Switzerland
+# -----------------------------------------------------------------------
+# Name.......: docker-compose.yml
+# Author.....: Stefan Oehrli (oes) stefan.oehrli@trivadis.com
+# Editor.....: Stefan Oehrli
+# Date.......: 2020.10.15
+# Revision...: --
+# Purpose....: Docker compose file to create Guacamole setup
+# Notes......: --
+# Reference..: https://github.com/oehrlis/oudbase
+# License....: Apache License Version 2.0, January 2004 as shown
+#              at http://www.apache.org/licenses/
+# ---------------------------------------------------------------------------
+
+version: '3.5'
+services:
+
+# - guacd -------------------------------------------------------------------
+    guacd:
+        image: guacamole/guacd
+        container_name: guacd
+        networks:
+            guacnet:
+        restart: always
+        volumes:
+        - ${DOCKER_VOLUME_BASE}/guacd/drive:/drive:rw
+        - ${DOCKER_VOLUME_BASE}/guacd/record:/record:rw
+
+# - guacamole ---------------------------------------------------------------
+    guacamole:
+        image: guacamole/guacamole
+        container_name: guacamole
+        depends_on:
+        - guacd
+        - postgres
+        environment:
+          GUACD_HOSTNAME: guacd
+          POSTGRES_DATABASE: guacadb
+          POSTGRES_HOSTNAME: postgres
+          POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
+          POSTGRES_USER: guacamole_user
+
+        links:
+        - guacd
+        networks:
+            guacnet:
+        ports:
+    ## enable next line if not using nginx
+        - 8080:8080/tcp
+    ## enable next line when using nginx
+    #    - 8080/tcp
+        restart: always
+# ---------------------------------------------------------------------------
+# - postgres
+# ---------------------------------------------------------------------------
+    postgres:
+        image: postgres
+        container_name: postgres
+        environment:
+          PGDATA: /var/lib/postgresql/data/guacamole
+          POSTGRES_DB: guacadb
+          POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
+          POSTGRES_USER: guacamole_user
+        networks:
+            guacnet:
+        restart: always
+        volumes:
+        - ${DOCKER_VOLUME_BASE}/config/:/docker-entrypoint-initdb.d:ro
+        - ${DOCKER_VOLUME_BASE}/postgres/data:/var/lib/postgresql/data:rw
+    
+# ---------------------------------------------------------------------------
+# - nginx
+# ---------------------------------------------------------------------------
+    
+#     eusoud:
+#     image: oracle/oud:${DOE_EUS_OUD_VERSION}
+#     container_name: eusoud
+#     hostname: eusoud.${DOE_LAB_DOMAIN}
+#     networks:
+#         - doe_lab_net
+#     restart: unless-stopped
+#     volumes:
+#         - ${DOCKER_VOLUME_BASE}/doe/eus/oud:/u01
+#         - ./oud:/u01/config
+#         - ./common:/u01/common
+#     ports:
+#         - "${DOE_EUS_OUD_LDAP}:1389"
+#         - "${DOE_EUS_OUD_LDAPS}:1636"
+#         - "${DOE_EUS_OUD_ADMIN}:4444"
+#     environment:
+#         OUD_CUSTOM: 'TRUE'
+#         INSTANCE_INIT: /u01/config
+#         BASEDN: ${DOE_LAB_BASEDN}
+#         OUD_INSTANCE: oud_eus
+#         ADMIN_PASSWORD: ${DOE_ADMIN_PASSWORD}
+
+
+networks:
+    guacnet:
+      driver: bridge
+# - EOF -----------------------------------------------------------------
