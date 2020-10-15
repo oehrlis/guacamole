@@ -39,7 +39,7 @@ services:
           GUACD_HOSTNAME: guacd
           POSTGRES_DATABASE: guacadb
           POSTGRES_HOSTNAME: postgres
-          POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
+          POSTGRES_PASSWORD: Welcome1
           POSTGRES_USER: guacamole_user
 
         links:
@@ -61,13 +61,13 @@ services:
         environment:
           PGDATA: /var/lib/postgresql/data/guacamole
           POSTGRES_DB: guacadb
-          POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
+          POSTGRES_PASSWORD: Welcome1
           POSTGRES_USER: guacamole_user
         networks:
             guacnet:
         restart: always
         volumes:
-        - ${DOCKER_VOLUME_BASE}/config/:/docker-entrypoint-initdb.d:ro
+        - ./config/:/docker-entrypoint-initdb.d:ro
         - ${DOCKER_VOLUME_BASE}/postgres/data:/var/lib/postgresql/data:rw
     
 # ---------------------------------------------------------------------------
