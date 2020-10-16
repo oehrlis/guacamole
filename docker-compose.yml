@@ -21,8 +21,6 @@ services:
     guacd:
         image: guacamole/guacd
         container_name: guacd
-        networks:
-            guacnet:
         restart: always
         volumes:
         - ${DOCKER_VOLUME_BASE}/data/guacd/drive:/drive:rw
@@ -41,20 +39,12 @@ services:
           POSTGRES_HOSTNAME: postgres
           POSTGRES_PASSWORD: Welcome1
           POSTGRES_USER: guacamole_user
-
         links:
         - guacd
-        networks:
-            guacnet:
         ports:
-    ## enable next line if not using nginx
         - 8080:8080/tcp
-    ## enable next line when using nginx
-    #    - 8080/tcp
         restart: always
-# ---------------------------------------------------------------------------
-# - postgres
-# ---------------------------------------------------------------------------
+# - postgres ----------------------------------------------------------------
     postgres:
         image: postgres
         container_name: postgres
@@ -63,42 +53,8 @@ services:
           POSTGRES_DB: guacadb
           POSTGRES_PASSWORD: Welcome1
           POSTGRES_USER: guacamole_user
-        networks:
-            guacnet:
         restart: always
         volumes:
-        - ./config/:/docker-entrypoint-initdb.d:ro
+        - ./config/postgres:/docker-entrypoint-initdb.d:ro
         - ${DOCKER_VOLUME_BASE}/data/postgres:/var/lib/postgresql/data:rw
-    
-# ---------------------------------------------------------------------------
-# - nginx
-# ---------------------------------------------------------------------------
-    nginx:
-        image: nginx
-        container_name: nginx
-        ports:
-            - 80:80
-            - 443:443
-        networks:
-            guacnet:
-        restart: unless-stopped
-        volumes:
-            - ${DOCKER_VOLUME_BASE}/config/nginx:/etc/nginx/conf.d
-            - ${DOCKER_VOLUME_BASE}/data/certbot/conf:/etc/letsencrypt
-            - ${DOCKER_VOLUME_BASE}/data/certbot/www:/var/www/certbot
-        command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-    certbot:
-        image: certbot/certbot
-        container_name: certbot
-        restart: unless-stopped
-        volumes:
-            - ${DOCKER_VOLUME_BASE}/data/certbot/conf:/etc/letsencrypt
-            - ${DOCKER_VOLUME_BASE}/data/certbot/www:/var/www/certbot
-        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-          
-
-networks:
-    guacnet:
-      driver: bridge
 # - EOF -----------------------------------------------------------------
