@@ -21,12 +21,62 @@ set -o pipefail         # pipefail exit after 1st piped commands failed
 export SCRIPT_NAME=$(basename "$0")
 export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
 export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
+
+# -----------------------------------------------------------------------
+function gen_password {
+# Purpose....: generate a password string
+# -----------------------------------------------------------------------
+    Length=${1:-10}
+
+    # make sure, that the password length is not shorter than 4 characters
+    if [ ${Length} -lt 4 ]; then
+        Length=4
+    fi
+
+    # Auto generate a password
+    while true; do
+        # use urandom to generate a random string
+        s=$(cat /dev/urandom | tr -dc "A-Za-z0-9" | fold -w ${Length} | head -n 1)
+        # check if the password meet the requirements
+        if [[ ${#s} -ge ${Length} && "$s" == *[A-Z]* && "$s" == *[a-z]* && "$s" == *[0-9]*  ]]; then
+            echo "$s"
+            break
+        fi
+    done
+}
+
 echo "INFO: Start to config guacamole at $(date)" 
 
-echo "INFO: Get postgres config ------------------------------------------------"
-mkdir -p ${SCRIPT_BASE}/config/postgres >/dev/null 2>&1
-docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgres > ${SCRIPT_BASE}/config/postgres/initdb.sql
-docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > ${SCRIPT_BASE}/config/mysql/initdb.sql
+echo "INFO: Get mysql config ------------------------------------------------"
+mkdir -p ${SCRIPT_BASE}/config/mysql >/dev/null 2>&1
+docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > ${SCRIPT_BASE}/config/mysql/00_initdb.sql
 
+echo "INFO: Define passwords ------------------------------------------------"
+. ${SCRIPT_BASE}/.env
+
+# check if we do have a default admin password
+if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
+    # Auto generate a password
+    echo "- auto generate new mysql root password..."
+    MYSQL_ROOT_PASSWORD=$(gen_password)
+    sed -i "s/^MYSQL_ROOT_PASSWORD.*|MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}|" ${SCRIPT_BASE}/.env
+fi
+
+if [ -z ${MYSQL_PASSWORD} ]; then
+    # Auto generate a password
+    echo "- auto generate new mysql password..."
+    MYSQL_PASSWORD=$(gen_password)
+    sed -i "s/^MYSQL_PASSWORD.*|MYSQL_PASSWORD=${MYSQL_PASSWORD}|" ${SCRIPT_BASE}/.env
+fi
+
+if [ -z ${GUACADMIN_PASSWORD} ]; then
+    # Auto generate a password
+    echo "- auto generate new password..."
+    GUACADMIN_PASSWORD=$(gen_password)
+    sed -i "s/^GUACADMIN_PASSWORD.*|GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}|" ${SCRIPT_BASE}/.env
+fi
+
+# update config script
+sed -i 's/GUACADMIN_PASSWORD/${GUACADMIN_PASSWORD}/' ${SCRIPT_BASE}/config/mysql/01_configure.sql
 echo "INFO: Finish to config guacamole at $(date)" 
 # --- EOF --------------------------------------------------------------------

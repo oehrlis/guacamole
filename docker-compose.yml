@@ -37,7 +37,7 @@ services:
             MYSQL_HOSTNAME: mysql
             MYSQL_DATABASE: guacadb
             MYSQL_USER: guacamole_user
-            MYSQL_PASSWORD: Welcome2
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         links:
         - guacd
         ports:
@@ -49,42 +49,11 @@ services:
         image: mysql/mysql-server
         container_name: mysql
         environment:
-            MYSQL_ROOT_PASSWORD: Welcome1
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_USER: guacamole_user
-            MYSQL_PASSWORD: Welcome2
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: guacadb
         volumes:
             - ./config/mysql:/docker-entrypoint-initdb.d:ro
             - ${DOCKER_VOLUME_BASE}/data/mysql:/var/lib/mysql/:rw
-# # - guacamole ---------------------------------------------------------------
-#     guacamole:
-#         image: guacamole/guacamole
-#         container_name: guacamole
-#         depends_on:
-#         - guacd
-#         - postgres
-#         environment:
-#           GUACD_HOSTNAME: guacd
-#           POSTGRES_DATABASE: guacadb
-#           POSTGRES_HOSTNAME: postgres
-#           POSTGRES_PASSWORD: Welcome1
-#           POSTGRES_USER: guacamole_user
-#         links:
-#         - guacd
-#         ports:
-#         - 8080:8080/tcp
-#         restart: always
-# # - postgres ----------------------------------------------------------------
-#     postgres:
-#         image: postgres
-#         container_name: postgres
-#         environment:
-#           PGDATA: /var/lib/postgresql/data/guacamole
-#           POSTGRES_DB: guacadb
-#           POSTGRES_PASSWORD: Welcome1
-#           POSTGRES_USER: guacamole_user
-#         restart: always
-#         volumes:
-#         - ./config/postgres:/docker-entrypoint-initdb.d:ro
-#         - ${DOCKER_VOLUME_BASE}/data/postgres:/var/lib/postgresql/data:rw
 # - EOF -----------------------------------------------------------------
