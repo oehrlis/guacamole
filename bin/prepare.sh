@@ -20,7 +20,7 @@ set -o pipefail         # pipefail exit after 1st piped commands failed
 
 export SCRIPT_NAME=$(basename "$0")
 export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
-export SCRIPT_BASE="$(dirname ${ORADBA_BIN})"
+export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
 echo "INFO: Start to config guacamole at $(date)" 
 
 echo "INFO: Get postgres config ------------------------------------------------"
