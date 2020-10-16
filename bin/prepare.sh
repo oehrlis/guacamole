@@ -77,6 +77,6 @@ if [ -z ${GUACADMIN_PASSWORD} ]; then
 fi
 
 # update config script
-sed -i 's/GUACADMIN_PASSWORD/${GUACADMIN_PASSWORD}/' ${SCRIPT_BASE}/config/mysql/01_configure.sql
+sed -i "s/GUACADMIN_PASSWORD/${GUACADMIN_PASSWORD}/" ${SCRIPT_BASE}/config/mysql/01_configure.sql
 echo "INFO: Finish to config guacamole at $(date)" 
 # --- EOF --------------------------------------------------------------------

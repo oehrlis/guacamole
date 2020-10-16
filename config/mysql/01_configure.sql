@@ -1,15 +1,15 @@
 -----------------------------------------------------------------------------
---Trivadis AG, Infrastructure Managed Services
---Saegereistrasse 29, 8152 Glattbrugg, Switzerland
------------------------------------------------------------------------------
---Name.......: 01_configure.sql
---Author.....: Stefan Oehrli (oes) stefan.oehrli@trivadis.com
---Editor.....: Stefan Oehrli
---Date.......: 2020.04.28
---Revision...: 
---Purpose....: Configure guacamole DB.
---Notes......: --
---Reference..: --
+-- Trivadis AG, Infrastructure Managed Services
+-- Saegereistrasse 29, 8152 Glattbrugg, Switzerland
+----------------------------------------------------------------------------
+-- Name.......: 01_configure.sql
+-- Author.....: Stefan Oehrli (oes) stefan.oehrli@trivadis.com
+-- Editor.....: Stefan Oehrli
+-- Date.......: 2020.04.28
+-- Revision...: 
+-- Purpose....: Configure guacamole DB.
+-- Notes......: --
+-- Reference..: --
 -----------------------------------------------------------------------------
 
 use guacadb;
