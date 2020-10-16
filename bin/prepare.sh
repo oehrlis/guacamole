@@ -59,21 +59,21 @@ if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
     # Auto generate a password
     echo "- auto generate new mysql root password..."
     MYSQL_ROOT_PASSWORD=$(gen_password)
-    sed -i "s/^MYSQL_ROOT_PASSWORD.*|MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}|" ${SCRIPT_BASE}/.env
+    sed -i "s/^MYSQL_ROOT_PASSWORD.*/MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}/" ${SCRIPT_BASE}/.env
 fi
 
 if [ -z ${MYSQL_PASSWORD} ]; then
     # Auto generate a password
     echo "- auto generate new mysql password..."
     MYSQL_PASSWORD=$(gen_password)
-    sed -i "s/^MYSQL_PASSWORD.*|MYSQL_PASSWORD=${MYSQL_PASSWORD}|" ${SCRIPT_BASE}/.env
+    sed -i "s/^MYSQL_PASSWORD.*/MYSQL_PASSWORD=${MYSQL_PASSWORD}/" ${SCRIPT_BASE}/.env
 fi
 
 if [ -z ${GUACADMIN_PASSWORD} ]; then
     # Auto generate a password
     echo "- auto generate new password..."
     GUACADMIN_PASSWORD=$(gen_password)
-    sed -i "s/^GUACADMIN_PASSWORD.*|GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}|" ${SCRIPT_BASE}/.env
+    sed -i "s/^GUACADMIN_PASSWORD.*/GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}/" ${SCRIPT_BASE}/.env
 fi
 
 # update config script
