@@ -26,6 +26,7 @@ echo "INFO: Start to config guacamole at $(date)"
 echo "INFO: Get postgres config ------------------------------------------------"
 mkdir -p ${SCRIPT_BASE}/config/postgres >/dev/null 2>&1
 docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgres > ${SCRIPT_BASE}/config/postgres/initdb.sql
+docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > ${SCRIPT_BASE}/config/mysql/initdb.sql
 
 echo "INFO: Finish to config guacamole at $(date)" 
 # --- EOF --------------------------------------------------------------------
