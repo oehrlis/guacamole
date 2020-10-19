@@ -26,23 +26,27 @@ export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
 function gen_password {
 # Purpose....: generate a password string
 # -----------------------------------------------------------------------
-    Length=${1:-10}
+    Length=${1:-12}
 
     # make sure, that the password length is not shorter than 4 characters
     if [ ${Length} -lt 4 ]; then
         Length=4
     fi
 
-    # Auto generate a password
-    while true; do
-        # use urandom to generate a random string
-        s=$(cat /dev/urandom | tr -dc "A-Za-z0-9" | fold -w ${Length} | head -n 1)
-        # check if the password meet the requirements
-        if [[ ${#s} -ge ${Length} && "$s" == *[A-Z]* && "$s" == *[a-z]* && "$s" == *[0-9]*  ]]; then
-            echo "$s"
-            break
-        fi
-    done
+    # generate password
+    if [ $(command -v pwgend) ]; then 
+        pwgen -s -1 ${Length}
+    else 
+        while true; do
+            # use urandom to generate a random string
+            s=$(cat /dev/urandom | tr -dc "A-Za-z0-9" | fold -w ${Length} | head -n 1)
+            # check if the password meet the requirements
+            if [[ ${#s} -ge ${Length} && "$s" == *[A-Z]* && "$s" == *[a-z]* && "$s" == *[0-9]*  ]]; then
+                echo "$s"
+                break
+            fi
+        done
+    fi
 }
 
 echo "INFO: Start to config guacamole at $(date)" 
@@ -53,14 +57,6 @@ docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --mysql > ${SCR
 
 echo "INFO: Define passwords ------------------------------------------------"
 . ${SCRIPT_BASE}/.env
-
-# check if we do have a default admin password
-# if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
-#     # Auto generate a password
-#     echo "- auto generate new mysql root password..."
-#     MYSQL_ROOT_PASSWORD=$(gen_password)
-#     sed -i "s/^MYSQL_ROOT_PASSWORD.*/MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}/" ${SCRIPT_BASE}/.env
-# fi
 
 if [ -z ${MYSQL_PASSWORD} ]; then
     # Auto generate a password
