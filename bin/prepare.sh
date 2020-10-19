@@ -55,12 +55,12 @@ echo "INFO: Define passwords ------------------------------------------------"
 . ${SCRIPT_BASE}/.env
 
 # check if we do have a default admin password
-if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
-    # Auto generate a password
-    echo "- auto generate new mysql root password..."
-    MYSQL_ROOT_PASSWORD=$(gen_password)
-    sed -i "s/^MYSQL_ROOT_PASSWORD.*/MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}/" ${SCRIPT_BASE}/.env
-fi
+# if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
+#     # Auto generate a password
+#     echo "- auto generate new mysql root password..."
+#     MYSQL_ROOT_PASSWORD=$(gen_password)
+#     sed -i "s/^MYSQL_ROOT_PASSWORD.*/MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}/" ${SCRIPT_BASE}/.env
+# fi
 
 if [ -z ${MYSQL_PASSWORD} ]; then
     # Auto generate a password
