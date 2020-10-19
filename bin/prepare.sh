@@ -34,7 +34,7 @@ function gen_password {
     fi
 
     # generate password
-    if [ $(command -v pwgend) ]; then 
+    if [ $(command -v pwgen) ]; then 
         pwgen -s -1 ${Length}
     else 
         while true; do
