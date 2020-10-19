@@ -49,7 +49,6 @@ services:
         image: mysql/mysql-server
         container_name: mysql
         environment:
-            # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_USER: guacamole_user
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: guacadb
