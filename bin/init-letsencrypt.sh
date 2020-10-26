@@ -24,7 +24,7 @@ export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
 export EMAIL=${EMAIL:-""}   # Adding a valid address is strongly recommended
 export HOSTNAME=${HOSTNAME:-$(hostname)}
 export DOMAINNAME=${DOMAINNAME:-"trivadislabs.com"}
-export STAGING=${STAGING:-0} # Set to 1 if you're testing your setup to avoid hitting request limits
+export STAGING_ENABLE=${STAGING_ENABLE:-0} # Set to 1 if you're testing your setup to avoid hitting request limits
 
 domains=(${HOSTNAME}.${DOMAINNAME})
 data_path="${SCRIPT_BASE}/data/certbot"
@@ -97,7 +97,7 @@ case "$EMAIL" in
 esac
 
 # Enable staging mode if needed
-if [ $STAGING != "0" ]; then staging_arg="--staging"; fi
+if [ $STAGING_ENABLE != "0" ]; then staging_arg="--staging"; fi
 
 docker-compose run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
