@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ---------------------------------------------------------------------------
 # Trivadis AG, Infrastructure Managed Services
 # Saegereistrasse 29, 8152 Glattbrugg, Switzerland
