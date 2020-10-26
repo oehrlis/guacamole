@@ -44,8 +44,8 @@ http {
     include                 /etc/nginx/conf.d/*.conf;
 
     # ssl config files 
-    ssl_certificate     /etc/letsencrypt/live/$hostname.trivadislabs.com/fullchain.pem; 
-    ssl_certificate_key /etc/letsencrypt/live/$hostname.trivadislabs.com/privkey.pem; 
+    ssl_certificate     /etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem; 
+    ssl_certificate_key /etc/letsencrypt/live/${NGINX_HOST}/privkey.pem; 
     include             /etc/letsencrypt/options-ssl-nginx.conf; 
     ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem; 
 
@@ -60,17 +60,18 @@ http {
             root /var/www/certbot;
         }
 
+        # define the proxy target
         location / {
-            proxy_pass      http://www.trivadislabs.com;
+            proxy_pass      http://${NGINX_PROXYSERVER};
         }
     }
 
     # Proxy Server Configuration
     server {
-        server_name         $hostname.trivadislabs.com; 
+        server_name         ${NGINX_HOST}; 
 
         location / {
-            proxy_pass      http://www.trivadislabs.com;
+            proxy_pass      http://${NGINX_PROXYSERVER};
         }
 
         location /guacamole {
@@ -88,13 +89,13 @@ http {
 
 #   forward all request to HTTPS
     server {
-        if ($host = $hostname.trivadislabs.com) {
+        if ($host = ${NGINX_HOST}) {
             return          301 https://$host$request_uri;
         }
 
         listen              80 ;
         listen              [::]:80 ;
-        server_name         $hostname.trivadislabs.com;
+        server_name         ${NGINX_HOST};
         return              404; 
     }
 }
