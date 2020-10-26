@@ -24,8 +24,6 @@ echo "INFO: Start ${SCRIPT_NAME} at $(date) and wait for ${WAIT2RENEW}"
 
 # define signal to terminate
 trap exit TERM
-# renew certificate
-certbot renew
 
 # define a endless loop
 while :; do 
