@@ -50,6 +50,16 @@ This repository contains the mock example for setting up a docker-based guacamol
     docker-compose up -d
     ```
 
+Alternatively you can run the script `setup_guacamole.sh` to execute most of the steps above.
+
+```bash
+git clone https://github.com/oehrlis/guacamole.git
+cd guacamole
+export EMAIL="info@example.org"
+export STAGING_ENABLE=1
+./bin/setup_guacamole.sh
+```
+
 ## Issues
 
 Please file your bug reports, enhancement requests, questions and other support requests within [Github's issue tracker](https://help.github.com/articles/about-issues/).
