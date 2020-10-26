@@ -19,18 +19,18 @@ set -o errexit          # exit when 1st unset variable found
 set -o pipefail         # pipefail exit after 1st piped commands failed
 
 export SCRIPT_NAME=$(basename "$0")
-export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
-export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
-export WAIT2RENEW=${WAIT2RENEW:-"5"}
+export WAIT2RENEW=${WAIT2RENEW:-"6h"}
 echo "INFO: Start ${SCRIPT_NAME} at $(date) and wait for ${WAIT2RENEW}" 
 
 # define signal to terminate
 trap exit TERM
+# renew certificate
+certbot renew
 
 # define a endless loop
 while :; do 
     echo "INFO: renew certbot at $(date)"
-    echo "certbot renew"
+    certbot renew
     sleep ${WAIT2RENEW} & wait $!
 done
 

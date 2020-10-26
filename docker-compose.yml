@@ -86,7 +86,7 @@ services:
         hostname: certbot
         restart: unless-stopped
         environment:
-            WAIT2RENEW: 6
+            WAIT2RENEW: 5
         volumes:
             - ./config/certbot/renew_certbot.sh:/renew_certbot.sh 
             - ./data/certbot/conf:/etc/letsencrypt
