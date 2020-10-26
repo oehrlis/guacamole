@@ -8,7 +8,7 @@
 # Editor.....: Stefan Oehrli
 # Date.......: 2020.04.28
 # Revision...: 
-# Purpose....: Script to bootstrap the jumphost respectively bastion host.
+# Purpose....: Script initiate and configure let's encrypt.
 # Notes......: --
 # Reference..: --
 # ---------------------------------------------------------------------------
