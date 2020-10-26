@@ -78,14 +78,18 @@ services:
         ports:
             - 80:80
             - 443:443
+
 # - certbot --------------------------------------------------------------
     certbot:
         image: certbot/certbot
         container_name: certbot
         hostname: certbot
         restart: unless-stopped
+        environment:
+            WAIT2RENEW: 6
         volumes:
+            - ./config/certbot/renew_certbot.sh:/renew_certbot.sh 
             - ./data/certbot/conf:/etc/letsencrypt
             - ./data/certbot/www:/var/www/certbot
-        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+        entrypoint: /renew_certbot.sh
 # - EOF -----------------------------------------------------------------
