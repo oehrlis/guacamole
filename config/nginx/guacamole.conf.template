@@ -44,9 +44,9 @@ server {
     include             /etc/letsencrypt/options-ssl-nginx.conf; 
     ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem; 
 
-    # location / {
-    #     proxy_pass      http://${NGINX_PROXYSERVER};
-    # }
+    location / {
+        proxy_pass      http://${NGINX_PROXYSERVER};
+    }
 
     location /guacamole {
         proxy_pass      http://${GUACAMOLE_SERVER}:8080/guacamole;
