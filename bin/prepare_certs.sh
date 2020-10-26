@@ -108,8 +108,8 @@ docker-compose run --rm --entrypoint "\
     --agree-tos --no-eff-email \
     --force-renewal" certbot
     
-echo "INFO: Reloading nginx ..." 
-docker exec -it nginx nginx -s reload
+echo "INFO: Stop nginx ..." 
+docker stop nginx
 
 echo "INFO: Finish to config certs at $(date)"
 # --- EOF --------------------------------------------------------------------
