@@ -72,7 +72,8 @@ services:
             NGINX_HOST: otemplate-bastion00.trivadislabs.com
             NGINX_PROXYSERVER: www.trivadislabs.com
         volumes:
-            - ./config/nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template 
+            - ./config/nginx/guacamole.conf.template:/etc/nginx/templates/guacamole.conf.template 
+            - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf 
             - ./data/certbot/conf:/etc/letsencrypt
             - ./data/certbot/www:/var/www/certbot
 
