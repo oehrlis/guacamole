@@ -24,16 +24,17 @@ services:
         hostname: guacd
         restart: unless-stopped
         volumes:
-        - ${DOCKER_VOLUME_BASE}/data/guacd/drive:/drive:rw
-        - ${DOCKER_VOLUME_BASE}/data/guacd/record:/record:rw
+            - ${DOCKER_VOLUME_BASE}/data/guacd/drive:/drive:rw
+            - ${DOCKER_VOLUME_BASE}/data/guacd/record:/record:rw
 # - guacamole ---------------------------------------------------------------
     guacamole:
         image: guacamole/guacamole
         container_name: guacamole
         hostname: guacamole
+        restart: unless-stopped
         depends_on:
-        - guacd
-        - mysql
+            - guacd
+            - mysql
         environment:
             GUACD_HOSTNAME: guacd
             MYSQL_HOSTNAME: mysql
@@ -41,10 +42,10 @@ services:
             MYSQL_USER: guacamole_user
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         links:
-        - guacd
-        ports:
-        - 8080:8080/tcp
-        restart: unless-stopped
+            - guacd
+        # Uncomment if you want to use guacamole without nginx proxy
+        # ports:
+        # - 8080:8080/tcp
 
 # - mysql ----------------------------------------------------------------
     mysql:
@@ -64,19 +65,19 @@ services:
         image: nginx
         container_name: nginx
         hostname: nginx
-        ports:
-            - 80:80
-            - 443:443
         restart: unless-stopped
         environment:
-            NGINX_HOST: otemplate-bastion00.trivadislabs.com
-            NGINX_PROXYSERVER: www.trivadislabs.com
+            NGINX_HOST: ${HOSTNAME}.${NGINX_DOMAIN}
+            NGINX_PROXYSERVER: ${NGINX_PROXYSERVER}
+            GUACAMOLE_SERVER: guacamole
         volumes:
             - ./config/nginx/guacamole.conf.template:/etc/nginx/templates/guacamole.conf.template 
             - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf 
             - ./data/certbot/conf:/etc/letsencrypt
             - ./data/certbot/www:/var/www/certbot
-
+        ports:
+            - 80:80
+            - 443:443
 # - certbot --------------------------------------------------------------
     certbot:
         image: certbot/certbot
