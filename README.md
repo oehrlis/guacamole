@@ -51,6 +51,7 @@ This repository contains the mock example for setting up a docker-based guacamol
     ```
 
 ## Issues
+
 Please file your bug reports, enhancement requests, questions and other support requests within [Github's issue tracker](https://help.github.com/articles/about-issues/).
 
 * [Questions](https://github.com/oehrlis/guacamole/issues?q=is%3Aissue+label%3Aquestion)
