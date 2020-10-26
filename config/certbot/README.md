@@ -1,5 +1,5 @@
-# Config Files
+# Certbot Scripts and Config Files
 
-This folder contains all files to setup and configure the OUD instance. Currently only bash scripts (.sh) LDIF files (.ldif) as well dsconfig batch files (.conf) are supported.
+This folder contains several config files and scripts to configure *certbot* container.
 
-- [setup](setup) Setup and configuration scripts executed to create and/or configure the instance.
+- [renew_certbot.sh](renew_certbot.sh) Entrypoint script to start the certbot. This script will automatically renew the certificate every 6h (default) or any other sleep time defined by `${WAIT2RENEW}`.

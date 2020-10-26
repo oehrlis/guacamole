@@ -1,5 +1,6 @@
-# Config Files
+# MySQL Scripts and Config Files
 
-This folder contains all files to setup and configure the OUD instance. Currently only bash scripts (.sh) LDIF files (.ldif) as well dsconfig batch files (.conf) are supported.
+This folder contains several config files and scripts to configure *MySQL* container.
 
-- [setup](setup) Setup and configuration scripts executed to create and/or configure the instance.
+- [01_configure.sql](01_configure.sql) Script to configure and reset the guacadmin password. The password will be updated by [prepare_initdb.sh](../../bin/prepare_initdb.sh).
+- [02_connections.sql](02_connections.sql) Script to configure additional connection. This file can / should be customized.

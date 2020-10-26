@@ -1,5 +1,7 @@
 # Config Files
 
-This folder contains all files to setup and configure the OUD instance. Currently only bash scripts (.sh) LDIF files (.ldif) as well dsconfig batch files (.conf) are supported.
+This folder contains the configuration files and scripts for the different containers.
 
-- [setup](setup) Setup and configuration scripts executed to create and/or configure the instance.
+- [certbot](certbot) Letsencrypt and certbot configuration files.
+- [mysql](mysql) MySQL configuration files and scripts.
+- [nginx](nginx) Nginx configuration files.
