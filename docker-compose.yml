@@ -21,7 +21,8 @@ services:
     guacd:
         image: guacamole/guacd
         container_name: guacd
-        restart: always
+        hostname: guacd
+        restart: unless-stopped
         volumes:
         - ${DOCKER_VOLUME_BASE}/data/guacd/drive:/drive:rw
         - ${DOCKER_VOLUME_BASE}/data/guacd/record:/record:rw
@@ -29,6 +30,7 @@ services:
     guacamole:
         image: guacamole/guacamole
         container_name: guacamole
+        hostname: guacamole
         depends_on:
         - guacd
         - mysql
@@ -42,17 +44,43 @@ services:
         - guacd
         ports:
         - 8080:8080/tcp
-        restart: always
+        restart: unless-stopped
 
 # - mysql ----------------------------------------------------------------
     mysql:
         image: mysql/mysql-server
         container_name: mysql
+        hostname: mysql
         environment:
+            # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_USER: guacamole_user
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: guacadb
+        restart: unless-stopped
         volumes:
             - ./config/mysql:/docker-entrypoint-initdb.d:ro
             - ${DOCKER_VOLUME_BASE}/data/mysql:/var/lib/mysql/:rw
+# - nginx ----------------------------------------------------------------
+    nginx:
+        image: nginx
+        container_name: nginx
+        hostname: nginx
+        ports:
+            - 80:80
+            - 443:443
+        restart: unless-stopped
+        volumes:
+            - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./data/certbot/conf:/etc/letsencrypt
+            - ./data/certbot/www:/var/www/certbot
+
+# - certbot --------------------------------------------------------------
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        hostname: certbot
+        restart: unless-stopped
+        volumes:
+            - ./data/certbot/conf:/etc/letsencrypt
+            - ./data/certbot/www:/var/www/certbot
 # - EOF -----------------------------------------------------------------
