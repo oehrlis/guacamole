@@ -12,24 +12,27 @@
 # Notes......: --
 # Reference..: --
 # ---------------------------------------------------------------------------
-# Define a bunch of bash option see 
-# https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html
-set -o nounset          # stop script after 1st cmd failed
-set -o errexit          # exit when 1st unset variable found
-set -o pipefail         # pipefail exit after 1st piped commands failed
 
-export SCRIPT_NAME=$(basename "$0")
-export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
-export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
+# - Customization -----------------------------------------------------------
 export EMAIL=${EMAIL:-""}   # Adding a valid address is strongly recommended
 export HOSTNAME=${HOSTNAME:-$(hostname)}
 export DOMAINNAME=${DOMAINNAME:-"trivadislabs.com"}
 export STAGING_ENABLE=${STAGING_ENABLE:-0} # Set to 1 if you're testing your setup to avoid hitting request limits
-GUACAMOLE_USER="avocado"
-GUACADMIN_USER="guacadmin"
-#export GUACADMIN_PASSWORD="LAB42-Schulung"
-GUACADMIN_PASSWORD=""
-# - EOF Variables -----------------------------------------------------------
+export GUACAMOLE_USER=${GUACAMOLE_USER:-"avocado"}
+export GUACAMOLE_BASE=${GUACAMOLE_BASE:-"/home/${GUACAMOLE_USER}/guacamole"}
+export GUACADMIN_USER=${GUACADMIN_USER:-"guacadmin"}
+export GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD:-""}
+# - End of Customization ----------------------------------------------------
+
+# - Default Values ----------------------------------------------------------
+export SCRIPT_NAME=$(basename "$0")
+export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
+export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
+export GITHUP_REPO="https://github.com/oehrlis/guacamole.git"
+# define logfile and logging
+LOG_BASE=${LOG_BASE:-"/var/log"}
+readonly LOGFILE="${LOG_BASE}/$(basename ${SCRIPT_NAME} .sh)_${TIMESTAMP}.log"
+# - EOF Default Values ------------------------------------------------------
 
 # - Functions ---------------------------------------------------------------
 function command_exists () {
@@ -65,20 +68,50 @@ function gen_password {
 }
 # - EOF Functions -----------------------------------------------------------
 
+# - Initialization ----------------------------------------------------------
+# Define a bunch of bash option see 
+# https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html
+set -o nounset          # stop script after 1st cmd failed
+set -o errexit          # exit when 1st unset variable found
+set -o pipefail         # pipefail exit after 1st piped commands failed
+
+# initialize logfile
+touch ${LOGFILE} 2>/dev/null
+exec 1>$LOGFILE         # Open standard out at `$LOG_FILE` for write.
+exec 2>&1               # Redirect standard error to standard out 
+
 echo "INFO: Start to config guacamole stack at $(date)" 
 
-# check if we do have a docker-compose
-if ! command_exists docker-compose; then
-    echo "ERR : docker-compose isn't installed/available on this system..."
-    exit 1
+# check if we do have docker-compose docker and git
+for c in docker-compose docker git; do
+    if ! command_exists ${c}; then
+        echo "ERR : ${c} isn't installed/available on this system..."
+        exit 1
+    fi
+done
+
+# check if we do have the git repo
+if [ -d "${GUACAMOLE_BASE}" ];then
+    cd ${GUACAMOLE_BASE}
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        git pull                                # pull the latest updates
+    else
+        echo "ERR : ${GUACAMOLE_BASE} isn't a git work tree ..."
+        exit 1
+    fi
+else
+    INSTALL_BASE=$(dirname ${GUACAMOLE_BASE})
+    if [ -d "${INSTALL_BASE}" ]; then
+        cd ${INSTALL_BASE}
+        git clone ${GITHUP_REPO}                # clone the repo
+    else
+        echo "ERR : can't access ${INSTALL_BASE} ..."
+        exit 1
+    fi
 fi
 
-# check if we do have a docker-compose
-if ! command_exists docker; then
-    echo "ERR : docker isn't installed/available on this system..."
-    exit 1
-fi
-
+# - Main --------------------------------------------------------------------
 echo "INFO: Pull the latest docker image ------------------------------------"
 # Pull the required images
 docker pull guacamole/guacamole
@@ -94,21 +127,19 @@ if [ -z ${GUACADMIN_PASSWORD} ]; then
     GUACADMIN_PASSWORD=$(pwgen -s -1 12)
 fi
 
-# get the guacamole git repo
-su -l avocado -c "cd /home/avocado; git clone https://github.com/oehrlis/guacamole.git"
 # Update guacadmin password
-sed -i "s/^GUACADMIN_PASSWORD.*/GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}/" ${SCRIPT_BASE}/.env
-sed -i "s/^NGINX_HOST.*/NGINX_HOST=${HOSTNAME}/" ${SCRIPT_BASE}/.env
+sed -i "s/^GUACADMIN_PASSWORD.*/GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}/" ${GUACAMOLE_BASE}/.env
+sed -i "s/^NGINX_HOST.*/NGINX_HOST=${HOSTNAME}/" ${GUACAMOLE_BASE}/.env
 
 # run preparation 
-${SCRIPT_BASE}/bin/prepare_initdb.sh
+${GUACAMOLE_BASE}/bin/prepare_initdb.sh
 
 # start guacamole containers
-cd ${SCRIPT_BASE}
+cd ${GUACAMOLE_BASE}
 docker-compose up -d guacamole mysql guacd
 
 # run init-letsencrypt  
-${SCRIPT_BASE}/bin/prepare_certs.sh
+${GUACAMOLE_BASE}/bin/prepare_certs.sh
 
 # start guacamole containers
 docker-compose up -d
