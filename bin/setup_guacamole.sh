@@ -14,14 +14,14 @@
 # ---------------------------------------------------------------------------
 
 # - Customization -----------------------------------------------------------
-export EMAIL=${EMAIL:-""}   # Adding a valid address is strongly recommended
-export HOSTNAME=${HOSTNAME:-$(hostname)}
-export DOMAINNAME=${DOMAINNAME:-"trivadislabs.com"}
-export STAGING_ENABLE=${STAGING_ENABLE:-0} # Set to 1 if you're testing your setup to avoid hitting request limits
+export HOSTNAME=${HOSTNAME:-$(hostname)}                # Hostname for the bastion host
+export DOMAINNAME=${DOMAINNAME:-"trivadislabs.com"}     # Domainname for the bastion host
+export EMAIL=${EMAIL:-"admin@${DOMAINNAME}"}            # Adding a valid address is strongly recommended
+export STAGING_ENABLE=${STAGING_ENABLE:-0}              # Set to 1 if you're testing your setup to avoid hitting request limits
 export GUACAMOLE_USER=${GUACAMOLE_USER:-"avocado"}
 export GUACAMOLE_BASE=${GUACAMOLE_BASE:-"/home/${GUACAMOLE_USER}/guacamole"}
-export GUACADMIN_USER=${GUACADMIN_USER:-"guacadmin"}
-export GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD:-""}
+export GUACADMIN_USER=${GUACADMIN_USER:-"guacadmin"}    # guacadmin user name   
+export GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD:-""}     # Password for the guacadmin user
 # - End of Customization ----------------------------------------------------
 
 # - Default Values ----------------------------------------------------------
@@ -30,7 +30,7 @@ export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
 export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
 export GITHUP_REPO="https://github.com/oehrlis/guacamole.git"
 # define logfile and logging
-LOG_BASE=${LOG_BASE:-"/var/log"}
+LOG_BASE=${LOG_BASE:-"${SCRIPT_BASE}"}
 readonly LOGFILE="${LOG_BASE}/$(basename ${SCRIPT_NAME} .sh)_${TIMESTAMP}.log"
 # - EOF Default Values ------------------------------------------------------
 
