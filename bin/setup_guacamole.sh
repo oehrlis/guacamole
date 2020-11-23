@@ -29,8 +29,9 @@ export SCRIPT_NAME=$(basename "$0")
 export SCRIPT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P)"
 export SCRIPT_BASE="$(dirname ${SCRIPT_BIN})"
 export GITHUP_REPO="https://github.com/oehrlis/guacamole.git"
+TIMESTAMP=$(date "+%Y.%m.%d_%H%M%S")
 # define logfile and logging
-LOG_BASE=${LOG_BASE:-"${SCRIPT_BASE}"}
+LOG_BASE=${LOG_BASE:-"/home/${GUACAMOLE_USER}"}
 readonly LOGFILE="${LOG_BASE}/$(basename ${SCRIPT_NAME} .sh)_${TIMESTAMP}.log"
 # - EOF Default Values ------------------------------------------------------
 
