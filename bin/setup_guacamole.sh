@@ -78,7 +78,7 @@ set -o pipefail         # pipefail exit after 1st piped commands failed
 
 # initialize logfile
 touch ${LOGFILE} 2>/dev/null
-exec 1>$LOGFILE         # Open standard out at `$LOG_FILE` for write.
+exec &> >(tee -a "$LOGFILE") # Open standard out at `$LOG_FILE` for write.     
 exec 2>&1               # Redirect standard error to standard out 
 
 echo "INFO: Start to config guacamole stack at $(date)" 
