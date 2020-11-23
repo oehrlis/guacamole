@@ -106,7 +106,7 @@ docker-compose run --rm --entrypoint "\
     $domain_args \
     --rsa-key-size $rsa_key_size \
     --agree-tos --no-eff-email \
-    --force-renewal" certbot
+    --force-renewal" certbot || echo "WARN: Failed to get the let's encrypt certificate ..." 
     
 echo "INFO: Stop nginx ..." 
 docker stop nginx
