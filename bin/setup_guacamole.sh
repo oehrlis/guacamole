@@ -125,7 +125,7 @@ docker pull certbot/certbot
 if [ -z ${GUACADMIN_PASSWORD} ]; then
     # Auto generate a password
     echo "- auto generate new ${GUACADMIN_USER} password..."
-    GUACADMIN_PASSWORD=$(pwgen -s -1 12)
+    GUACADMIN_PASSWORD=$(gen_password 12)
 fi
 
 # Update guacadmin password
