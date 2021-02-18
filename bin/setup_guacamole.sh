@@ -130,7 +130,6 @@ fi
 
 # Update guacadmin password
 sed -i "s/^GUACADMIN_PASSWORD.*/GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}/" ${GUACAMOLE_BASE}/.env
-sed -i "s/^NGINX_HOST.*/NGINX_HOST=${HOSTNAME}/" ${GUACAMOLE_BASE}/.env
 
 # run preparation 
 ${GUACAMOLE_BASE}/bin/prepare_initdb.sh
