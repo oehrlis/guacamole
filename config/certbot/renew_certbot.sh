@@ -1,6 +1,6 @@
 #!/bin/sh
 # ---------------------------------------------------------------------------
-# Trivadis AG, Infrastructure Managed Services
+# Trivadis - Part of Accenture, Platform Factory - Transactional Data Platform
 # Saegereistrasse 29, 8152 Glattbrugg, Switzerland
 # ---------------------------------------------------------------------------
 # Name.......: renew_certbot.sh 
