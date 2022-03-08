@@ -92,4 +92,16 @@ services:
             - ./data/certbot/conf:/etc/letsencrypt
             - ./data/certbot/www:/var/www/certbot
         entrypoint: /renew_certbot.sh
+
+# - openvpn --------------------------------------------------------------
+    openvpn:
+        cap_add:
+            - NET_ADMIN
+        image: kylemanna/openvpn
+        container_name: openvpn
+        ports:
+            - "1194:1194/udp"
+        restart: always
+        volumes:
+            - ./data/openvpn-data/conf:/etc/openvpn
 # - EOF -----------------------------------------------------------------
