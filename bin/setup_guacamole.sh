@@ -143,13 +143,11 @@ docker-compose up -d guacamole mysql guacd
 ${GUACAMOLE_BASE}/bin/prepare_certs.sh
 
 # prepare openvpn 
-
-HOSTNAME=${HOSTNAME:-$(hostname)}                # Hostname for the bastion host
-export DOMAINNAME
+echo "INFO: Configure OpenVPN -----------------------------------------------"
 docker-compose run --rm openvpn ovpn_genconfig -u "udp://${HOSTNAME}.${DOMAINNAME}" -p "push route 10.0.1.0 255.255.255.0"
 echo "${HOSTNAME}.${DOMAINNAME}"|docker-compose run --rm openvpn ovpn_initpki nopass
-docker-compose run --rm openvpn easyrsa build-client-full $(hostname) nopass
-docker-compose run --rm openvpn ovpn_getclient >$SCRIPT_BASE/${HOSTNAME}.ovpn
+docker-compose run --rm openvpn easyrsa build-client-full ${HOSTNAME} nopass
+docker-compose run --rm openvpn ovpn_getclient ${HOSTNAME} >$SCRIPT_BASE/${HOSTNAME}.ovpn
 echo "pull" >>$SCRIPT_BASE/${HOSTNAME}.ovpn
 echo "tls-client" >>$SCRIPT_BASE/${HOSTNAME}.ovpn
 echo "remote ${HOSTNAME}.${DOMAINNAME}">>$SCRIPT_BASE/${HOSTNAME}.ovpn
