@@ -58,7 +58,7 @@ services:
             MYSQL_DATABASE: guacadb
         restart: unless-stopped
         volumes:
-            - ./config/mysql:/docker-entrypoint-initdb.d:ro
+            - ${DOCKER_VOLUME_BASE}/config/mysql:/docker-entrypoint-initdb.d:ro
             - ${DOCKER_VOLUME_BASE}/data/mysql:/var/lib/mysql/:rw
 # - nginx ----------------------------------------------------------------
     nginx:
@@ -71,10 +71,12 @@ services:
             NGINX_PROXYSERVER: ${NGINX_PROXYSERVER}
             GUACAMOLE_SERVER: guacamole
         volumes:
-            - ./config/nginx/guacamole.conf.template:/etc/nginx/templates/guacamole.conf.template 
-            - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf 
-            - ./data/certbot/conf:/etc/letsencrypt
-            - ./data/certbot/www:/var/www/certbot
+            - ${DOCKER_VOLUME_BASE}/config/nginx/guacamole.conf.template:/etc/nginx/templates/guacamole.conf.template 
+            - ${DOCKER_VOLUME_BASE}/config/nginx/nginx.conf:/etc/nginx/nginx.conf 
+            - ${DOCKER_VOLUME_BASE}/data/nginx/access.log /var/log/nginx/access.log
+            - ${DOCKER_VOLUME_BASE}/data/nginx/error.log /var/log/nginx/error.log
+            - ${DOCKER_VOLUME_BASE}/data/certbot/conf:/etc/letsencrypt
+            - ${DOCKER_VOLUME_BASE}/data/certbot/www:/var/www/certbot
         ports:
             - 80:80
             - 443:443
@@ -88,9 +90,9 @@ services:
         environment:
             WAIT2RENEW: 6h
         volumes:
-            - ./config/certbot/renew_certbot.sh:/renew_certbot.sh 
-            - ./data/certbot/conf:/etc/letsencrypt
-            - ./data/certbot/www:/var/www/certbot
+            - ${DOCKER_VOLUME_BASE}/config/certbot/renew_certbot.sh:/renew_certbot.sh 
+            - ${DOCKER_VOLUME_BASE}/data/certbot/conf:/etc/letsencrypt
+            - ${DOCKER_VOLUME_BASE}/data/certbot/www:/var/www/certbot
         entrypoint: /renew_certbot.sh
 
 # - openvpn --------------------------------------------------------------
@@ -103,5 +105,5 @@ services:
             - "1194:1194/udp"
         restart: always
         volumes:
-            - ./data/openvpn-data/conf:/etc/openvpn
+            - ${DOCKER_VOLUME_BASE}/data/openvpn-data/conf:/etc/openvpn
 # - EOF -----------------------------------------------------------------
