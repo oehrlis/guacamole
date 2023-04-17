@@ -139,8 +139,6 @@ ${GUACAMOLE_BASE}/bin/prepare_initdb.sh
 cd ${GUACAMOLE_BASE}
 docker-compose up -d guacamole mysql guacd
 
-echo "exit before prepare_certs.sh"
-exit
 # run init-letsencrypt  
 ${GUACAMOLE_BASE}/bin/prepare_certs.sh
 
