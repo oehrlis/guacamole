@@ -26,8 +26,9 @@ server {
     server_tokens off;
 
     location /.well-known/acme-challenge/ {
+        rewrite ^/\.well-known/acme-challenge(.*) $1 break;
         root /var/www/certbot;
-    }
+    } 
 
     location / {
         return 301 https://$host$request_uri;
