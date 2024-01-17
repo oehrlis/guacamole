@@ -132,6 +132,12 @@ fi
 # Update guacadmin password
 sed -i "s/^GUACADMIN_PASSWORD.*/GUACADMIN_PASSWORD=${GUACADMIN_PASSWORD}/" ${GUACAMOLE_BASE}/.env
 
+# create data directories
+mkdir -p ${GUACAMOLE_BASE}/data/mysql
+mkdir -p ${GUACAMOLE_BASE}/data/certbot/conf
+mkdir -p ${GUACAMOLE_BASE}/data/certbot/www
+mkdir -p ${GUACAMOLE_BASE}/data/openvpn-data/conf
+
 # run preparation 
 ${GUACAMOLE_BASE}/bin/prepare_initdb.sh
 
