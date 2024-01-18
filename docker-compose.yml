@@ -19,7 +19,7 @@ services:
 
 # - guacd -------------------------------------------------------------------
     guacd:
-        image: guacamole/guacd:1.4.0
+        image: guacamole/guacd
         container_name: guacd
         hostname: guacd
         restart: unless-stopped
@@ -28,7 +28,7 @@ services:
             - ${DOCKER_VOLUME_BASE}/data/guacd/record:/record:rw
 # - guacamole ---------------------------------------------------------------
     guacamole:
-        image: guacamole/guacamole:1.4.0
+        image: guacamole/guacamole
         container_name: guacamole
         hostname: guacamole
         restart: unless-stopped

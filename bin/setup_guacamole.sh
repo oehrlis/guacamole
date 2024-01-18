@@ -115,8 +115,8 @@ fi
 # - Main --------------------------------------------------------------------
 echo "INFO: Pull the latest docker image ------------------------------------"
 # Pull the required images
-docker pull guacamole/guacamole:1.4.0
-docker pull guacamole/guacd:1.4.0
+docker pull guacamole/guacamole
+docker pull guacamole/guacd
 docker pull mysql/mysql-server:8.0
 docker pull nginx
 docker pull certbot/certbot
